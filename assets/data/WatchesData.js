@@ -46,9 +46,16 @@ export const watches = [
     series: "THE ART OF PAILLONNÉ ENAMELING",
     watchname: ["TOURBILLON PAILLONNÉE"],
     color: {},
-    image: [require("../images/GRANDESECONDE1resized.png")],
+    image: [require("../images/GRADNESECONDE1resized.png")],
     price: 500,
   },
 ];
 
 export const watchSizes = [36, 41, 43, 46];
+
+export const LaunchImages = [
+  require("../images/Launch1.jpeg"),
+  require("../images/Launch2.jpeg"),
+  require("../images/Launch3.jpeg"),
+  require("../images/Launch4.jpeg"),
+];
