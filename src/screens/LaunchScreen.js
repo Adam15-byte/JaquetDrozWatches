@@ -4,6 +4,8 @@ import { COLORS, SIZES, FONTS } from "../../assets/consts/consts";
 import { LaunchImages } from "../../assets/data/WatchesData";
 import { Ionicons } from "@expo/vector-icons";
 import Animated, {
+  Extrapolate,
+  interpolate,
   useAnimatedScrollHandler,
   useAnimatedStyle,
   useSharedValue,
@@ -27,7 +29,26 @@ const LaunchScreen = () => {
       </View>
       <View style={styles.dotsContainer}>
         {LaunchImages.map((item, index) => {
-          return <View key={`dot-${index}`} style={styles.singleDot} />;
+
+          const animatedOpacity = useAnimatedStyle(() => {
+            const opacity = interpolate(
+              translateImageX.value,
+              [
+                (index - 1) * SIZES.SCREEN_WIDTH,
+                index * SIZES.SCREEN_WIDTH,
+                (index + 1) * SIZES.SCREEN_WIDTH,
+              ],
+              [0.3, 1, 0.3],
+              Extrapolate.CLAMP
+            );
+            return { opacity };
+          });
+          return (
+            <Animated.View
+              key={`dot-${index}`}
+              style={[styles.singleDot, animatedOpacity]}
+            />
+          );
         })}
       </View>
       <Animated.FlatList
