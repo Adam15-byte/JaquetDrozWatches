@@ -3,15 +3,19 @@ import React from "react";
 import { COLORS, SIZES, FONTS } from "../../assets/consts/consts";
 import { LaunchImages } from "../../assets/data/WatchesData";
 import { Ionicons } from "@expo/vector-icons";
+import Animated, {
+  useAnimatedScrollHandler,
+  useAnimatedStyle,
+  useSharedValue,
+} from "react-native-reanimated";
+import WatchOnLaunch from "../components/WatchOnLaunch";
 
 const LaunchScreen = () => {
-  const renderItem = ({ item, index }) => {
-    return (
-      <View style={styles.imageContainer}>
-        <Image source={item} style={styles.image} resizeMode="contain" />
-      </View>
-    );
-  };
+  const translateImageX = useSharedValue(0);
+  const scrollHandler = useAnimatedScrollHandler((event) => {
+    translateImageX.value = event.contentOffset.x;
+    console.log(event.contentOffset.x);
+  });
   const newArrayOfFour = new Array(4).fill(0);
   return (
     <View style={styles.container}>
@@ -26,14 +30,21 @@ const LaunchScreen = () => {
           return <View key={`dot-${index}`} style={styles.singleDot} />;
         })}
       </View>
-      <FlatList
+      <Animated.FlatList
         data={LaunchImages}
-        renderItem={renderItem}
+        renderItem={({ item, index }) => (
+          <WatchOnLaunch
+            item={item}
+            index={index}
+            translateX={translateImageX}
+          />
+        )}
         horizontal
         showsHorizontalScrollIndicator={false}
         pagingEnabled
         scrollEventThrottle={16}
         keyExtractor={(_, index) => index}
+        onScroll={scrollHandler}
       />
 
       <View style={styles.sliderContainer}>
@@ -68,17 +79,7 @@ const styles = StyleSheet.create({
     paddingTop: 70,
     paddingBottom: 40,
   },
-  imageContainer: {
-    overflow: "hidden",
-    alignItems: "center",
-    justifyContent: "center",
-    width: SIZES.SCREEN_WIDTH,
-    padding: 100,
-  },
-  image: {
-    position: "absolute",
-    width: SIZES.SCREEN_WIDTH * 1.25,
-  },
+
   brandTitleContainer: {
     marginLeft: 30,
   },
