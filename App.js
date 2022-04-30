@@ -1,5 +1,6 @@
+import "react-native-gesture-handler";
 import { StyleSheet, Text, View } from "react-native";
-import { COLORS, SIZES } from "./assets/consts/consts";
+import { COLORS } from "./assets/consts/consts";
 import LaunchScreen from "./src/screens/LaunchScreen";
 import { StatusBar } from "expo-status-bar";
 

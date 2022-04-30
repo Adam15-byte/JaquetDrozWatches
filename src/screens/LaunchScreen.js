@@ -2,7 +2,7 @@ import { StyleSheet, Text, View, FlatList, Image } from "react-native";
 import React from "react";
 import { COLORS, SIZES, FONTS } from "../../assets/consts/consts";
 import { LaunchImages } from "../../assets/data/WatchesData";
-import { Ionicons } from "@expo/vector-icons";
+
 import Animated, {
   Extrapolate,
   interpolate,
@@ -11,25 +11,29 @@ import Animated, {
   useSharedValue,
 } from "react-native-reanimated";
 import WatchOnLaunch from "../components/WatchOnLaunch";
+import GetStartedButtonSlider from "../components/GetStartedButtonSlider";
 
 const LaunchScreen = () => {
   const translateImageX = useSharedValue(0);
   const scrollHandler = useAnimatedScrollHandler((event) => {
     translateImageX.value = event.contentOffset.x;
-    console.log(event.contentOffset.x);
   });
-  const newArrayOfFour = new Array(4).fill(0);
+  const textOpacity = useSharedValue(1);
+  const animatedTextOpacity = useAnimatedStyle(() => {
+    return {
+      opacity: textOpacity.value,
+    };
+  });
   return (
     <View style={styles.container}>
-      <View style={styles.brandTitleContainer}>
+      <Animated.View style={[styles.brandTitleContainer, animatedTextOpacity]}>
         <Text style={styles.brandTitleText}>JAQUET DROZ</Text>
-      </View>
-      <View style={styles.catchphraseContainer}>
+      </Animated.View>
+      <Animated.View style={[styles.catchphraseContainer, animatedTextOpacity]}>
         <Text style={styles.catchphraseText}>Do Not Waste Time</Text>
-      </View>
+      </Animated.View>
       <View style={styles.dotsContainer}>
         {LaunchImages.map((item, index) => {
-
           const animatedOpacity = useAnimatedStyle(() => {
             const opacity = interpolate(
               translateImageX.value,
@@ -65,28 +69,10 @@ const LaunchScreen = () => {
         pagingEnabled
         scrollEventThrottle={16}
         keyExtractor={(_, index) => index}
+        bounces={false}
         onScroll={scrollHandler}
       />
-
-      <View style={styles.sliderContainer}>
-        <View style={styles.getStartedButton}>
-          <Text style={styles.getStartedText}>Get Started</Text>
-        </View>
-        <View style={styles.continueArrows}>
-          {newArrayOfFour.map((_, index) => (
-            <View
-              key={`arrow-${index}`}
-              style={[styles.arrowContainer, { opacity: 0.8 - index * 0.2 }]}
-            >
-              <Ionicons
-                name="chevron-forward-sharp"
-                size={20}
-                color={COLORS.white}
-              />
-            </View>
-          ))}
-        </View>
-      </View>
+      <GetStartedButtonSlider textOpacity={textOpacity} />
     </View>
   );
 };
@@ -98,7 +84,7 @@ const styles = StyleSheet.create({
     flex: 1,
     width: SIZES.SCREEN_WIDTH,
     paddingTop: 70,
-    paddingBottom: 40,
+    paddingBottom: 50,
   },
 
   brandTitleContainer: {
@@ -128,39 +114,5 @@ const styles = StyleSheet.create({
     height: 10,
     borderRadius: 5,
     backgroundColor: COLORS.white,
-  },
-  sliderContainer: {
-    width: SIZES.SCREEN_WIDTH * 0.8,
-    height: 70,
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginLeft: "auto",
-    marginRight: "auto",
-    flexDirection: "row",
-    borderRadius: 30,
-    backgroundColor: COLORS.darkgrey,
-  },
-  getStartedButton: {
-    width: 180,
-    height: "100%",
-    borderRadius: 30,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: COLORS.golden,
-  },
-  getStartedText: {
-    color: COLORS.black,
-    ...FONTS.h3,
-  },
-  continueArrows: {
-    flexDirection: "row",
-    height: "100%",
-    width: 100,
-    alignItems: "center",
-    justifyContent: "center",
-    marginRight: 15,
-  },
-  arrowContainer: {
-    marginRight: -3,
   },
 });
