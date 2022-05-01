@@ -1,5 +1,6 @@
 export const watches = [
   {
+    id: 1,
     collection: "Automata",
     series: "BIRD REPEATER",
     watchname: [
@@ -16,6 +17,7 @@ export const watches = [
     price: 400,
   },
   {
+    id: 2,
     collection: "GRANDE SECONDE",
     series: "GRANDE SECONDE TOURBILLON",
     watchname: [
@@ -34,6 +36,7 @@ export const watches = [
     price: 600,
   },
   {
+    id: 3,
     collection: "ASTRALE",
     series: "PERPETUAL CALENDAR ÉCLIPSE",
     watchname: ["PERPETUAL CALENDAR ÉCLIPSE IVORY ENAMEL"],
@@ -42,6 +45,7 @@ export const watches = [
     price: 450,
   },
   {
+    id: 4,
     collection: "Ateliers D'art",
     series: "THE ART OF PAILLONNÉ ENAMELING",
     watchname: ["TOURBILLON PAILLONNÉE"],

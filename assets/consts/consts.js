@@ -9,7 +9,7 @@ export const COLORS = {
 };
 export const FONTS = {
   h1: { fontSize: 24, fontWeight: "800" },
-  h2: { fontSize: 18, fontWeight: "700" },
+  h2: { fontSize: 20, fontWeight: "700" },
   h3: { fontSize: 16, fontWeight: "700" },
   h4: { fontSize: 14, fontWeight: "500" },
   h5: { fontSize: 12, fontWeight: "500" },
