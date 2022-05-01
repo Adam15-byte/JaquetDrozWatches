@@ -13,7 +13,7 @@ import Animated, {
 import WatchOnLaunch from "../components/WatchOnLaunch";
 import GetStartedButtonSlider from "../components/GetStartedButtonSlider";
 
-const LaunchScreen = () => {
+const LaunchScreen = ({ changeScreen }) => {
   const translateImageX = useSharedValue(0);
   const scrollHandler = useAnimatedScrollHandler((event) => {
     translateImageX.value = event.contentOffset.x;
@@ -24,6 +24,14 @@ const LaunchScreen = () => {
       opacity: textOpacity.value,
     };
   });
+
+  const imageOpacity = useSharedValue(1);
+  const animatedImageOpacity = useAnimatedStyle(() => {
+    return {
+      opacity: imageOpacity.value,
+    };
+  });
+
   return (
     <View style={styles.container}>
       <Animated.View style={[styles.brandTitleContainer, animatedTextOpacity]}>
@@ -32,7 +40,7 @@ const LaunchScreen = () => {
       <Animated.View style={[styles.catchphraseContainer, animatedTextOpacity]}>
         <Text style={styles.catchphraseText}>Do Not Waste Time</Text>
       </Animated.View>
-      <View style={styles.dotsContainer}>
+      <Animated.View style={[styles.dotsContainer, animatedImageOpacity]}>
         {LaunchImages.map((item, index) => {
           const animatedOpacity = useAnimatedStyle(() => {
             const opacity = interpolate(
@@ -54,7 +62,7 @@ const LaunchScreen = () => {
             />
           );
         })}
-      </View>
+      </Animated.View>
       <Animated.FlatList
         data={LaunchImages}
         renderItem={({ item, index }) => (
@@ -71,8 +79,13 @@ const LaunchScreen = () => {
         keyExtractor={(_, index) => index}
         bounces={false}
         onScroll={scrollHandler}
+        style={animatedImageOpacity}
       />
-      <GetStartedButtonSlider textOpacity={textOpacity} />
+      <GetStartedButtonSlider
+        textOpacity={textOpacity}
+        imageOpacity={imageOpacity}
+        changeScreen={changeScreen}
+      />
     </View>
   );
 };
