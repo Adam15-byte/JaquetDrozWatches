@@ -1,12 +1,40 @@
-import { StyleSheet, Text, View, FlatList } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  FlatList,
+  TouchableOpacity,
+} from "react-native";
 import React from "react";
 import { COLORS, FONTS, SIZES } from "../../assets/consts/consts";
-import Animated from "react-native-reanimated";
+import Animated, {
+  scrollTo,
+  useAnimatedRef,
+  useDerivedValue,
+  useSharedValue,
+} from "react-native-reanimated";
 import RectGreyButton from "../components/RectGreyButton";
 import { watches } from "../../assets/data/WatchesData";
 import WatchOnBrowseScreen from "../components/WatchOnBrowseScreen";
+import { Feather } from "@expo/vector-icons";
 
 const BrowseScreen = () => {
+  // Ref and Value used to swipe left and right on the screen
+  const flatListRef = useAnimatedRef();
+  const scroll = useSharedValue(0);
+  useDerivedValue(() => {
+    scrollTo(flatListRef, scroll.value * SIZES.SCREEN_WIDTH, 0, true);
+  });
+  const scrollNext = () => {
+    if (scroll.value <= 2) {
+      scroll.value = scroll.value + 1;
+    }
+  };
+  const scrollPrevious = () => {
+    if (scroll.value >= 1) {
+      scroll.value = scroll.value - 1;
+    }
+  };
   return (
     <View style={styles.container}>
       <View style={styles.topBarContainer}>
@@ -26,12 +54,22 @@ const BrowseScreen = () => {
             <WatchOnBrowseScreen item={item} index={index} />
           )}
           horizontal
-          showsHorizontalScrollIndicator={false}
           pagingEnabled
+          scrollEnabled={false}
+          showsHorizontalScrollIndicator={false}
           scrollEventThrottle={16}
           style={{ zIndex: 5 }}
+          ref={flatListRef}
         />
         <View style={styles.circleBackgroundForPhone} />
+        <View style={styles.leftRightArrowsContainer}>
+          <TouchableOpacity onPress={() => scrollPrevious()}>
+            <Feather name="chevron-left" size={42} color={COLORS.golden} />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => scrollNext()}>
+            <Feather name="chevron-right" size={42} color={COLORS.golden} />
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
   );
@@ -79,5 +117,12 @@ const styles = StyleSheet.create({
     aspectRatio: 1,
     backgroundColor: COLORS.darkgrey,
     zIndex: 1,
+  },
+  leftRightArrowsContainer: {
+    position: "absolute",
+    flexDirection: "row",
+    width: SIZES.SCREEN_WIDTH * 0.95,
+    justifyContent: "space-between",
+    zIndex: 10,
   },
 });
