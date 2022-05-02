@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   Image,
 } from "react-native";
-import React from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { COLORS, FONTS, SIZES } from "../../assets/consts/consts";
 import Animated, {
   scrollTo,
@@ -22,6 +22,7 @@ import { watches } from "../../assets/data/WatchesData";
 import WatchOnBrowseScreen from "../components/WatchOnBrowseScreen";
 import { Feather } from "@expo/vector-icons";
 import { PanGestureHandler } from "react-native-gesture-handler";
+import IconsContainer from "../components/IconsContainer";
 
 const BrowseScreen = () => {
   // Ref and Value used to swipe left and right on the screen
@@ -52,7 +53,6 @@ const BrowseScreen = () => {
     onActive: (event, context) => {
       rotateX.value = event.translationX + context.x;
       rotateY.value = event.translationY + context.y;
-      // console.log(event);
     },
     onEnd: () => {},
   });
@@ -62,7 +62,13 @@ const BrowseScreen = () => {
     };
   });
 
-  const translateX = useSharedValue(0);
+  const [currentViewingMode, setCurrentViewingMode] = useState(1);
+  const changeCurrentViewingMode = useCallback(
+    (newState) => {
+      setCurrentViewingMode((prevState) => newState);
+    },
+    [currentViewingMode]
+  );
   return (
     <View style={styles.container}>
       <View style={styles.topBarContainer}>
@@ -75,6 +81,14 @@ const BrowseScreen = () => {
           onPress={() => console.log("cart pressed")}
         />
       </View>
+
+      {/* Icons to change between rotation and zooming */}
+      <IconsContainer
+        currentViewingMode={currentViewingMode}
+        changeCurrentViewingMode={changeCurrentViewingMode}
+      />
+
+      {/* FlatList Displaying the watches in the center */}
       <View style={styles.flatListContainer}>
         <FlatList
           data={watches}
@@ -147,10 +161,11 @@ const styles = StyleSheet.create({
     color: COLORS.white,
     ...FONTS.h5,
   },
+
   flatListContainer: {
     height: SIZES.SCREEN_HEIGHT * 0.5,
     width: SIZES.SCREEN_WIDTH,
-    marginTop: 15,
+    marginTop: 10,
     justifyContent: "center",
     alignItems: "center",
   },

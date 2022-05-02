@@ -8,6 +8,7 @@ import Animated, {
 } from "react-native-reanimated";
 
 const WatchOnBrowseScreen = ({ item, index, rotateX, rotateY  }) => {
+  // rotation values come from BrowseScreen, from the circle with arrows
   const animatedRotatingStyle = useAnimatedStyle(() => {
     return {
       transform: [{ rotate: (rotateX.value + rotateY.value) / 400 }],
