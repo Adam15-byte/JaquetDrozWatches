@@ -1,14 +1,8 @@
-import {
-  StyleSheet,
-  Text,
-  View,
-  FlatList,
-  TouchableOpacity,
-  Image,
-} from "react-native";
-import React, { useState, useCallback, useEffect } from "react";
+import { StyleSheet, Text, View, TouchableOpacity, Image } from "react-native";
+import React, { useState, useCallback, useEffect, useRef } from "react";
 import { COLORS, FONTS, SIZES } from "../../assets/consts/consts";
 import Animated, {
+  runOnJS,
   scrollTo,
   useAnimatedGestureHandler,
   useAnimatedRef,
@@ -16,6 +10,8 @@ import Animated, {
   useAnimatedStyle,
   useDerivedValue,
   useSharedValue,
+  FadeIn,
+  FadeOut,
 } from "react-native-reanimated";
 import RectGreyButton from "../components/RectGreyButton";
 import { watches } from "../../assets/data/WatchesData";
@@ -23,6 +19,8 @@ import WatchOnBrowseScreen from "../components/WatchOnBrowseScreen";
 import { Feather } from "@expo/vector-icons";
 import { PanGestureHandler } from "react-native-gesture-handler";
 import IconsContainer from "../components/IconsContainer";
+import { FlatList } from "react-native-gesture-handler";
+import ZoomView from "../components/ZoomView";
 
 const BrowseScreen = () => {
   // Ref and Value used to swipe left and right on the screen
@@ -69,6 +67,41 @@ const BrowseScreen = () => {
     },
     [currentViewingMode]
   );
+
+  // Gesture Handler for zooming
+  const [zoomViewVisible, setZoomViewVisible] = useState(false);
+  const changeZoomViewVisibility = useCallback(() => {
+    setZoomViewVisible((prevState) => !prevState);
+    console.log("initiated");
+  }, [zoomViewVisible]);
+  const positionX = useSharedValue(0);
+  const positionY = useSharedValue(0);
+  const zoomGesture = useAnimatedGestureHandler({
+    onStart: (event) => {
+      positionX.value = event.absoluteX;
+      positionY.value = event.absoluteY;
+      runOnJS(changeZoomViewVisibility)();
+    },
+    onActive: (event) => {
+      positionX.value = Math.max(
+        Math.min(event.absoluteX, SIZES.SCREEN_WIDTH * 0.7),
+        SIZES.SCREEN_WIDTH * 0.3
+      );
+      positionY.value = Math.max(
+        Math.min(event.absoluteY, SIZES.SCREEN_HEIGHT * 0.65),
+        SIZES.SCREEN_HEIGHT * 0.3
+      );
+    },
+    onEnd: () => {
+      runOnJS(changeZoomViewVisibility)();
+    },
+  });
+
+  // Get the index of the current item
+  const [currentItem, setCurrentItem] = useState(0);
+  const onViewChangeRef = useRef(({ viewableItems }) => {
+    setCurrentItem((prevState) => viewableItems[0].index);
+  });
   return (
     <View style={styles.container}>
       <View style={styles.topBarContainer}>
@@ -89,6 +122,14 @@ const BrowseScreen = () => {
       />
 
       {/* FlatList Displaying the watches in the center */}
+      <ZoomView
+        zoomViewVisible={zoomViewVisible}
+        positionX={positionX}
+        positionY={positionY}
+        rotateX={rotateX}
+        rotateY={rotateY}
+        currentItem={currentItem}
+      />
       <View style={styles.flatListContainer}>
         <FlatList
           data={watches}
@@ -107,18 +148,50 @@ const BrowseScreen = () => {
           scrollEventThrottle={16}
           style={{ zIndex: 5 }}
           ref={flatListRef}
+          onViewableItemsChanged={onViewChangeRef.current}
         />
         <View style={styles.circleBackgroundForPhone} />
-        <PanGestureHandler onGestureEvent={onGestureEvent}>
+        {/* 
+        When Rotation is enabled show View with PanGestureHadnler to read the touch data for rotation */}
+        {currentViewingMode === 1 && (
+          <PanGestureHandler onGestureEvent={onGestureEvent}>
+            <Animated.View
+              style={[styles.rotatioArrowContainer, animatedRotatingStyle]}
+              entering={FadeIn}
+              exiting={FadeOut}
+            >
+              <Image
+                source={require("../../assets/images/RotateArrow.png")}
+                style={styles.rotationArrowImage}
+              />
+            </Animated.View>
+          </PanGestureHandler>
+        )}
+
+        {/* When Zoom is enabled, display a screen similar to the one with arrow, to maintain slight overlay on watches */}
+        {currentViewingMode === 2 && (
           <Animated.View
-            style={[styles.rotatioArrowContainer, animatedRotatingStyle]}
+            style={styles.rotatioArrowContainer}
+            entering={FadeIn}
+            exiting={FadeOut}
           >
             <Image
-              source={require("../../assets/images/RotateArrow.png")}
+              source={require("../../assets/images/RotateCircle.png")}
               style={styles.rotationArrowImage}
             />
           </Animated.View>
-        </PanGestureHandler>
+        )}
+
+        {/* Transparent block in front of watch displayed to read the data from PanGestureHandler */}
+        {currentViewingMode === 2 && (
+          <PanGestureHandler onGestureEvent={zoomGesture}>
+            <Animated.View
+              style={styles.zoomGestureView}
+              entering={FadeIn}
+              exiting={FadeOut}
+            />
+          </PanGestureHandler>
+        )}
 
         <View style={styles.leftRightArrowsContainer}>
           <TouchableOpacity onPress={() => scrollPrevious()}>
@@ -185,12 +258,18 @@ const styles = StyleSheet.create({
     zIndex: 10,
   },
   rotatioArrowContainer: {
-    zIndex: 10,
+    zIndex: 12,
     position: "absolute",
   },
   rotationArrowImage: {
     height: SIZES.SCREEN_WIDTH * 0.7,
     aspectRatio: 1,
     opacity: 0.3,
+  },
+  zoomGestureView: {
+    width: SIZES.SCREEN_WIDTH * 0.6,
+    height: SIZES.SCREEN_HEIGHT * 0.4,
+    zIndex: 12,
+    position: "absolute",
   },
 });
