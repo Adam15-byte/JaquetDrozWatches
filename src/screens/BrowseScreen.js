@@ -21,6 +21,7 @@ import { PanGestureHandler } from "react-native-gesture-handler";
 import IconsContainer from "../components/IconsContainer";
 import { FlatList } from "react-native-gesture-handler";
 import ZoomView from "../components/ZoomView";
+import ColorsSizePicker from "../components/ColorsSizePicker";
 
 const BrowseScreen = () => {
   // Ref and Value used to swipe left and right on the screen
@@ -202,6 +203,23 @@ const BrowseScreen = () => {
           </TouchableOpacity>
         </View>
       </View>
+      <View style={styles.nameContainer}>
+        <Text style={styles.watchName} numberOfLines={2}>
+          {watches[currentItem].watchname[0].toUpperCase()}
+        </Text>
+        <Text style={styles.seriesName}>
+          {watches[currentItem].collection.toUpperCase()}
+        </Text>
+      </View>
+      <ColorsSizePicker currentItem={currentItem} />
+      <View style={styles.buyButtonPriceContainer}>
+        <View style={styles.priceContainer}>
+          <Text style={styles.priceTag}>$ {watches[currentItem].price}</Text>
+        </View>
+        <View style={styles.buttonContainer}>
+          <Text style={styles.buttonText}>Order Online</Text>
+        </View>
+      </View>
     </View>
   );
 };
@@ -271,5 +289,51 @@ const styles = StyleSheet.create({
     height: SIZES.SCREEN_HEIGHT * 0.4,
     zIndex: 12,
     position: "absolute",
+  },
+  nameContainer: {
+    width: SIZES.SCREEN_WIDTH * 0.8,
+    height: 60,
+    alignItems: "flex-start",
+    justifyContent: "flex-start",
+    marginTop: -40,
+  },
+  watchName: {
+    color: COLORS.white,
+    ...FONTS.h3,
+  },
+  seriesName: {
+    color: COLORS.white,
+    ...FONTS.h4,
+    marginTop: 5,
+  },
+  buyButtonPriceContainer: {
+    flexDirection: "row",
+    height: 70,
+    width: SIZES.SCREEN_WIDTH * 0.8,
+    marginTop: 20,
+    backgroundColor: COLORS.darkgrey,
+    borderRadius: 30,
+  },
+  priceContainer: {
+    height: "100%",
+    width: SIZES.SCREEN_WIDTH * 0.3,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  buttonContainer: {
+    height: "100%",
+    width: SIZES.SCREEN_WIDTH * 0.5,
+    backgroundColor: COLORS.golden,
+    borderRadius: 30,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  priceTag: {
+    ...FONTS.h3,
+    color: COLORS.white,
+  },
+  buttonText: {
+    color: COLORS.black,
+    ...FONTS.h3,
   },
 });

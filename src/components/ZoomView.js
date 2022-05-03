@@ -56,7 +56,6 @@ const styles = StyleSheet.create({
     aspectRatio: 1,
     borderRadius: SIZES.SCREEN_HEIGHT / 12,
     position: "absolute",
-    alignSelf: "center",
     zIndex: 99,
     alignItems: "center",
     justifyContent: "center",

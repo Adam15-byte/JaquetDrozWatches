@@ -1,14 +1,14 @@
 export const watches = [
   {
     id: 1,
-    collection: "Automata",
+    collection: "AUTOMATA",
     series: "BIRD REPEATER",
     watchname: [
       "BIRD REPEATER",
       "BIRD REPEATER FALL OF THE RHINE",
       "BIRD REPEATER OPENWORK",
     ],
-    color: {},
+    color: ["#d6b300", "#ebd66c", "#a8a8a8"],
     image: [
       require("../images/BIRD_REPEATER1resized.png"),
       require("../images/BIRD_REPEATER2resized.png"),
@@ -26,7 +26,7 @@ export const watches = [
       "TOURBILLON AVENTURINE",
       "TOURBILLON IVORY ENAMEL",
     ],
-    color: {},
+    color: ["#7d7d7d", "#faee66", "#264fc9", "#e3d644"],
     image: [
       require("../images/GRANDE_SECONDE_TOURBILLON1resized.png"),
       require("../images/GRANDE_SECONDE_TOURBILLON2resized.png"),
@@ -40,7 +40,7 @@ export const watches = [
     collection: "ASTRALE",
     series: "PERPETUAL CALENDAR ÉCLIPSE",
     watchname: ["PERPETUAL CALENDAR ÉCLIPSE IVORY ENAMEL"],
-    color: {},
+    color: ["#c9b900"],
     image: [require("../images/ASTRALE_PERPETUAL_CALENDAR1resized.png")],
     price: 450,
   },
@@ -49,7 +49,7 @@ export const watches = [
     collection: "Ateliers D'art",
     series: "THE ART OF PAILLONNÉ ENAMELING",
     watchname: ["TOURBILLON PAILLONNÉE"],
-    color: {},
+    color: ["#cf1d11"],
     image: [require("../images/GRADNESECONDE1resized.png")],
     price: 500,
   },
