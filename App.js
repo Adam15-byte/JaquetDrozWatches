@@ -5,6 +5,8 @@ import { COLORS, SIZES } from "./assets/consts/consts";
 import LaunchScreen from "./src/screens/LaunchScreen";
 import BrowseScreen from "./src/screens/BrowseScreen";
 import { StatusBar } from "expo-status-bar";
+import { Provider } from "react-redux";
+import { store } from "./store";
 
 export default function App() {
   const [currentScreen, setCurrentScreen] = useState(2);
@@ -15,11 +17,13 @@ export default function App() {
     [currentScreen]
   );
   return (
-    <View style={styles.container}>
-      {currentScreen === 1 && <LaunchScreen changeScreen={changeScreen} />}
-      {currentScreen === 2 && <BrowseScreen />}
-      <StatusBar style="light" />
-    </View>
+    <Provider store={store}>
+      <View style={styles.container}>
+        {currentScreen === 1 && <LaunchScreen changeScreen={changeScreen} />}
+        {currentScreen === 2 && <BrowseScreen />}
+        <StatusBar style="light" />
+      </View>
+    </Provider>
   );
 }
 
