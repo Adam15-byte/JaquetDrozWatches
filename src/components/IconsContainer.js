@@ -18,7 +18,6 @@ const IconsContainer = ({ currentViewingMode, changeCurrentViewingMode }) => {
   };
   useEffect(() => {
     opacityFunction();
-    console.log("changed to: ", currentViewingMode);
   }, [currentViewingMode]);
   return (
     <View>

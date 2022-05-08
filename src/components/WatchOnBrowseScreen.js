@@ -6,7 +6,7 @@ import Animated, {
   useAnimatedGestureHandler,
   useAnimatedStyle,
 } from "react-native-reanimated";
-import { PanGestureHandler } from "react-native-gesture-handler";
+import { useSelector } from "react-redux";
 
 const WatchOnBrowseScreen = ({ item, index, rotateX, rotateY }) => {
   // rotation values come from BrowseScreen, from the circle with arrows
@@ -15,9 +15,18 @@ const WatchOnBrowseScreen = ({ item, index, rotateX, rotateY }) => {
       transform: [{ rotate: (rotateX.value + rotateY.value) / 400 }],
     };
   });
+
+  ////
+  // Get the index of currently selected model (color), and value of isLoading not to crush the screen
+  ////
+  const currentColor = useSelector((state) => state.watchDisplayed.colorIndex);
   return (
     <Animated.View style={[styles.imageContainer, animatedRotatingStyle]}>
-      <Image style={styles.image} source={item.image[0]} resizeMode="contain" />
+      <Image
+        style={styles.image}
+        source={item.image[currentColor]}
+        resizeMode="contain"
+      />
     </Animated.View>
   );
 };

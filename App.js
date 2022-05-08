@@ -6,7 +6,7 @@ import LaunchScreen from "./src/screens/LaunchScreen";
 import BrowseScreen from "./src/screens/BrowseScreen";
 import { StatusBar } from "expo-status-bar";
 import { Provider } from "react-redux";
-import { store } from "./store";
+import { store } from "./src/features/store";
 
 export default function App() {
   const [currentScreen, setCurrentScreen] = useState(2);

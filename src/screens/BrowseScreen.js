@@ -22,6 +22,12 @@ import IconsContainer from "../components/IconsContainer";
 import { FlatList } from "react-native-gesture-handler";
 import ZoomView from "../components/ZoomView";
 import ColorsSizePicker from "../components/ColorsSizePicker";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  setNewWatch,
+  setNewColor,
+  setIsLoadingNewWatch,
+} from "../features/watchDisplayedSlice";
 
 const BrowseScreen = () => {
   // Ref and Value used to swipe left and right on the screen
@@ -73,7 +79,6 @@ const BrowseScreen = () => {
   const [zoomViewVisible, setZoomViewVisible] = useState(false);
   const changeZoomViewVisibility = useCallback(() => {
     setZoomViewVisible((prevState) => !prevState);
-    console.log("initiated");
   }, [zoomViewVisible]);
   const positionX = useSharedValue(0);
   const positionY = useSharedValue(0);
@@ -97,12 +102,26 @@ const BrowseScreen = () => {
       runOnJS(changeZoomViewVisibility)();
     },
   });
-
-  // Get the index of the current item
+  ////
+  // Get the index of the current watch, state of isLoading
+  ////
+  const currentWatch = useSelector(
+    (state) => state.watchDisplayed.collectionNumber
+  );
+  const isLoading = useSelector(
+    (state) => state.watchDisplayed.isLoadingNewWatch
+  );
+  const currentColor = useSelector((state) => state.watchDisplayed.colorIndex);
+  const dispatch = useDispatch();
   const [currentItem, setCurrentItem] = useState(0);
   const onViewChangeRef = useRef(({ viewableItems }) => {
     setCurrentItem((prevState) => viewableItems[0].index);
   });
+
+  useEffect(() => {
+    dispatch(setNewWatch(currentItem));
+    console.log(currentWatch);
+  }, [currentItem]);
   return (
     <View style={styles.container}>
       <View style={styles.topBarContainer}>
@@ -129,7 +148,6 @@ const BrowseScreen = () => {
         positionY={positionY}
         rotateX={rotateX}
         rotateY={rotateY}
-        currentItem={currentItem}
       />
       <View style={styles.flatListContainer}>
         <FlatList
@@ -195,26 +213,45 @@ const BrowseScreen = () => {
         )}
 
         <View style={styles.leftRightArrowsContainer}>
-          <TouchableOpacity onPress={() => scrollPrevious()}>
-            <Feather name="chevron-left" size={42} color={COLORS.golden} />
+          <TouchableOpacity
+            onPress={() => {
+              scrollPrevious();
+              if (currentWatch>0 && currentWatch<3) {dispatch(setIsLoadingNewWatch(true))};
+            }}
+          >
+            <View style={styles.singleArrowContainer}>
+              <Feather name="chevron-left" size={42} color={COLORS.golden} />
+            </View>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => scrollNext()}>
-            <Feather name="chevron-right" size={42} color={COLORS.golden} />
+          <TouchableOpacity
+            onPress={() => {
+              scrollNext();
+              if (currentWatch>0 && currentWatch<3) {dispatch(setIsLoadingNewWatch(true))};
+            }}
+          >
+            <View style={styles.singleArrowContainer}>
+              <Feather name="chevron-right" size={42} color={COLORS.golden} />
+            </View>
           </TouchableOpacity>
         </View>
       </View>
       <View style={styles.nameContainer}>
-        <Text style={styles.watchName} numberOfLines={2}>
-          {watches[currentItem].watchname[0].toUpperCase()}
-        </Text>
+        <View style={styles.titleContainer}>
+          {isLoading ? null : (
+            <Text style={styles.watchName} numberOfLines={2}>
+              {watches[currentWatch].watchname[currentColor].toUpperCase()}
+            </Text>
+          )}
+        </View>
+
         <Text style={styles.seriesName}>
-          {watches[currentItem].collection.toUpperCase()}
+          {watches[currentWatch].collection.toUpperCase()}
         </Text>
       </View>
-      <ColorsSizePicker currentItem={currentItem} />
+      <ColorsSizePicker />
       <View style={styles.buyButtonPriceContainer}>
         <View style={styles.priceContainer}>
-          <Text style={styles.priceTag}>$ {watches[currentItem].price}</Text>
+          <Text style={styles.priceTag}>$ {watches[currentWatch].price}</Text>
         </View>
         <View style={styles.buttonContainer}>
           <Text style={styles.buttonText}>Order Online</Text>
@@ -335,5 +372,12 @@ const styles = StyleSheet.create({
   buttonText: {
     color: COLORS.black,
     ...FONTS.h3,
+  },
+  singleArrowContainer: {
+    padding: 20,
+  },
+  titleContainer: {
+    height: 40,
+    width: SIZES.SCREEN_WIDTH * 0.8,
   },
 });

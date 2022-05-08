@@ -3,6 +3,7 @@ import React from "react";
 import { COLORS, SIZES } from "../../assets/consts/consts";
 import Animated, { useAnimatedStyle } from "react-native-reanimated";
 import { watches } from "../../assets/data/WatchesData";
+import { useSelector } from "react-redux";
 
 const ZoomView = ({
   zoomViewVisible,
@@ -10,8 +11,11 @@ const ZoomView = ({
   positionX,
   rotateX,
   rotateY,
-  currentItem,
 }) => {
+  const currentWatch = useSelector(
+    (state) => state.watchDisplayed.collectionNumber
+  );
+  const currentColor = useSelector((state) => state.watchDisplayed.colorIndex);
   const animatedForMovingAround = useAnimatedStyle(() => {
     return {
       transform: [
@@ -37,7 +41,7 @@ const ZoomView = ({
         <Animated.View style={[styles.container, animatedForMovingAround]}>
           <Animated.View style={zoomedImageStyle}>
             <Image
-              source={watches[currentItem].image[0]}
+              source={watches[currentWatch].image[currentColor]}
               style={styles.imageinside}
               resizeMode="contain"
             />

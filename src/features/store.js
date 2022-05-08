@@ -1,8 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
-import watchOnScreenReducer from "./src/redux/watchOnScreen";
-
+import { watchDisplayedReducer } from "./watchDisplayedSlice";
 export const store = configureStore({
   reducer: {
-    currentWatch: watchOnScreenReducer,
+    watchDisplayed: watchDisplayedReducer,
   },
 });

@@ -1,34 +1,58 @@
-import { StyleSheet, Text, View } from "react-native";
-import React from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+} from "react-native";
+import React, { useState, useCallback, useEffect } from "react";
 import { SIZES, COLORS, FONTS } from "../../assets/consts/consts";
 import { watches } from "../../assets/data/WatchesData";
 import { watchSizes } from "../../assets/data/WatchesData";
+import { useSelector, useDispatch } from "react-redux";
+import { setNewColor, setNewSize } from "../features/watchDisplayedSlice";
 
-const ColorsSizePicker = ({
-  currentItem,
-  selectedSize = 41,
-  selectedColor = 0,
-}) => {
+const ColorsSizePicker = () => {
+  const currentWatch = useSelector(
+    (state) => state.watchDisplayed.collectionNumber
+  );
+  const currentColor = useSelector((state) => state.watchDisplayed.colorIndex);
+  const currentSize = useSelector((state) => state.watchDisplayed.sizeSelected);
+  const dispatch = useDispatch();
+
+  ////
+  // on scroll to different collection, the color is reset to 0, in the background it also sets loading state to false
+  ////
+  useEffect(() => {
+    dispatch(setNewColor(0));
+  }, [currentWatch]);
   return (
     <View style={styles.colorSizingContainer}>
       <View style={styles.colorPicker}>
         <Text style={styles.headerText}>Color</Text>
         <View style={styles.colorsDisplayBar}>
-          {watches[currentItem].color.map((color, index) => (
-            <View
+          {watches[currentWatch].color.map((color, index) => (
+            ////
+            // On press set new color in redux state
+            ////
+            <TouchableOpacity
+              onPress={() => dispatch(setNewColor(index))}
               key={`color-${index}`}
-              style={[
-                styles.dotBackgroundBorder,
-                {
-                  borderColor: index === selectedColor ? COLORS.white : null,
-                },
-              ]}
             >
               <View
-                key={`color-${index}`}
-                style={[styles.colorDot, { backgroundColor: color }]}
-              />
-            </View>
+                style={[
+                  styles.dotBackgroundBorder,
+                  {
+                    borderColor: index === currentColor ? COLORS.white : null,
+                  },
+                ]}
+              >
+                <View
+                  key={`color-${index}`}
+                  style={[styles.colorDot, { backgroundColor: color }]}
+                />
+              </View>
+            </TouchableOpacity>
           ))}
         </View>
       </View>
@@ -36,15 +60,21 @@ const ColorsSizePicker = ({
         <Text style={styles.headerText}>Sizing</Text>
         <View style={styles.sizesDisplayBar}>
           {watchSizes.map((size, index) => (
-            <Text
+            <TouchableWithoutFeedback
               key={`size-${index}`}
-              style={[
-                styles.sizesTexts,
-                { opacity: size === selectedSize ? 1 : 0.4 },
-              ]}
+              onPress={() => dispatch(setNewSize(size))}
             >
-              {size}
-            </Text>
+              <View style={styles.sizeNumberContainer}>
+                <Text
+                  style={[
+                    styles.sizesTexts,
+                    { opacity: size === currentSize ? 1 : 0.4 },
+                  ]}
+                >
+                  {size}
+                </Text>
+              </View>
+            </TouchableWithoutFeedback>
           ))}
         </View>
       </View>
@@ -110,5 +140,11 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     alignItems: "center",
     justifyContent: "center",
+  },
+  sizeNumberContainer: {
+    padding: 10,
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: 10,
   },
 });
