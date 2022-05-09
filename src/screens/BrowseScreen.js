@@ -28,6 +28,7 @@ import {
   setNewColor,
   setIsLoadingNewWatch,
 } from "../features/watchDisplayedSlice";
+import { addToBag } from "../features/shoppingBag";
 
 const BrowseScreen = () => {
   // Ref and Value used to swipe left and right on the screen
@@ -120,7 +121,6 @@ const BrowseScreen = () => {
 
   useEffect(() => {
     dispatch(setNewWatch(currentItem));
-    console.log(currentWatch);
   }, [currentItem]);
   return (
     <View style={styles.container}>
@@ -216,7 +216,9 @@ const BrowseScreen = () => {
           <TouchableOpacity
             onPress={() => {
               scrollPrevious();
-              if (currentWatch>0 && currentWatch<3) {dispatch(setIsLoadingNewWatch(true))};
+              if (currentWatch > 0 && currentWatch < 3) {
+                dispatch(setIsLoadingNewWatch(true));
+              }
             }}
           >
             <View style={styles.singleArrowContainer}>
@@ -226,7 +228,9 @@ const BrowseScreen = () => {
           <TouchableOpacity
             onPress={() => {
               scrollNext();
-              if (currentWatch>0 && currentWatch<3) {dispatch(setIsLoadingNewWatch(true))};
+              if (currentWatch > 0 && currentWatch < 3) {
+                dispatch(setIsLoadingNewWatch(true));
+              }
             }}
           >
             <View style={styles.singleArrowContainer}>
@@ -253,9 +257,15 @@ const BrowseScreen = () => {
         <View style={styles.priceContainer}>
           <Text style={styles.priceTag}>$ {watches[currentWatch].price}</Text>
         </View>
-        <View style={styles.buttonContainer}>
-          <Text style={styles.buttonText}>Order Online</Text>
-        </View>
+        <TouchableOpacity
+          onPress={() => {
+            dispatch(addToBag("blag", "wegg", 333, "ffddd"));
+          }}
+        >
+          <View style={styles.buttonContainer}>
+            <Text style={styles.buttonText}>Order Online</Text>
+          </View>
+        </TouchableOpacity>
       </View>
     </View>
   );
