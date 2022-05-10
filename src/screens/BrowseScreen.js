@@ -30,7 +30,7 @@ import {
 } from "../features/watchDisplayedSlice";
 import { addToBag } from "../features/shoppingBag";
 
-const BrowseScreen = () => {
+const BrowseScreen = ({ changeScreen }) => {
   // Ref and Value used to swipe left and right on the screen
   const flatListRef = useAnimatedRef();
   const scroll = useSharedValue(0);
@@ -112,6 +112,7 @@ const BrowseScreen = () => {
   const isLoading = useSelector(
     (state) => state.watchDisplayed.isLoadingNewWatch
   );
+  const currentSize = useSelector((state) => state.watchDisplayed.sizeSelected);
   const currentColor = useSelector((state) => state.watchDisplayed.colorIndex);
   const dispatch = useDispatch();
   const [currentItem, setCurrentItem] = useState(0);
@@ -122,6 +123,25 @@ const BrowseScreen = () => {
   useEffect(() => {
     dispatch(setNewWatch(currentItem));
   }, [currentItem]);
+
+  ////
+  // Create an object in the background every time the currentWatch or currentColor is changed
+  // This object is what will get passed to shopping bag reducer action addToBag
+  ////
+  const shoppingBag = useSelector((state) => state.shoppingBag);
+  const [watchObjectForBag, setWatchObjectForBag] = useState({});
+  useEffect(() => {
+    setWatchObjectForBag((prevState) => ({
+      id: shoppingBag.length,
+      collection: watches[currentWatch].collection,
+      watchname: watches[currentWatch].watchname[currentColor],
+      price: watches[currentWatch].price,
+      image: watches[currentWatch].image[currentColor],
+      size: currentSize,
+      quantity: 1,
+    }));
+  }, [currentWatch, currentColor, shoppingBag, currentSize]);
+
   return (
     <View style={styles.container}>
       <View style={styles.topBarContainer}>
@@ -131,7 +151,10 @@ const BrowseScreen = () => {
         </View>
         <RectGreyButton
           featherIconName="shopping-cart"
-          onPress={() => console.log("cart pressed")}
+          onPress={() => {
+            changeScreen(3);
+          }}
+          isShoppingBag={true}
         />
       </View>
 
@@ -259,7 +282,7 @@ const BrowseScreen = () => {
         </View>
         <TouchableOpacity
           onPress={() => {
-            dispatch(addToBag("blag", "wegg", 333, "ffddd"));
+            dispatch(addToBag(watchObjectForBag));
           }}
         >
           <View style={styles.buttonContainer}>
@@ -384,7 +407,7 @@ const styles = StyleSheet.create({
     ...FONTS.h3,
   },
   singleArrowContainer: {
-    padding: 20,
+    padding: 10,
   },
   titleContainer: {
     height: 40,

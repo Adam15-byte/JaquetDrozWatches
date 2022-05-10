@@ -6,17 +6,13 @@ export const shoppingBagSlice = createSlice({
   name: "shoppingBag",
   initialState,
   reducers: {
+    ////
+    // action.payload is and object with all item information
+    ////
     addToBag: (state, action) => {
       const { collection, watchname, price, image } = action.payload;
-      console.log(state.length > 0 ? state[0] : null);
-      state = state.push({
-        id: state.length,
-        collection: collection,
-        watchname: watchname,
-        price: price,
-        image: image,
-        quantity: 1,
-      });
+      console.log(action.payload);
+      state = state.push(action.payload);
     },
     removeFromBag: (state, action) => {
       state.filter((item) => item.id !== action.payload.id);

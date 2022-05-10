@@ -5,14 +5,14 @@ import { COLORS, FONTS } from "../../assets/consts/consts";
 import { useSelector } from "react-redux";
 import Animated, { FadeIn } from "react-native-reanimated";
 
-const RectGreyButton = ({ featherIconName, onPress, isShoppingBag = true }) => {
+const RectGreyButton = ({ featherIconName, onPress, isShoppingBag }) => {
   const shoppingBag = useSelector((state) => state.shoppingBag);
   return (
     <TouchableOpacity style={styles.buttonContainer} onPress={onPress}>
-      {shoppingBag === true ? (
+      {isShoppingBag === true ? (
         shoppingBag.length > 0 ? (
           <Animated.View entering={FadeIn} style={styles.goldenCircle}>
-            <Text style={styles.numberText}>3</Text>
+            <Text style={styles.numberText}>{shoppingBag.length}</Text>
           </Animated.View>
         ) : null
       ) : null}
@@ -36,9 +36,9 @@ const styles = StyleSheet.create({
     position: "absolute",
     right: 10,
     top: 10,
-    width: 16,
-    height: 16,
-    borderRadius: 8,
+    width: 18,
+    height: 18,
+    borderRadius: 9,
     backgroundColor: COLORS.golden,
     alignItems: "center",
     justifyContent: "center",
@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
     zIndex: 100,
   },
   numberText: {
-    color: COLORS.darkgrey,
+    color: COLORS.white,
     ...FONTS.h5,
     fontWeight: "900",
   },

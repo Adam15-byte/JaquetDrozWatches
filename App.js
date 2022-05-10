@@ -4,6 +4,7 @@ import { StyleSheet, Text, View } from "react-native";
 import { COLORS, SIZES } from "./assets/consts/consts";
 import LaunchScreen from "./src/screens/LaunchScreen";
 import BrowseScreen from "./src/screens/BrowseScreen";
+import BagScreen from "./src/screens/BagScreen";
 import { StatusBar } from "expo-status-bar";
 import { Provider } from "react-redux";
 import { store } from "./src/features/store";
@@ -20,7 +21,8 @@ export default function App() {
     <Provider store={store}>
       <View style={styles.container}>
         {currentScreen === 1 && <LaunchScreen changeScreen={changeScreen} />}
-        {currentScreen === 2 && <BrowseScreen />}
+        {currentScreen === 2 && <BrowseScreen changeScreen={changeScreen} />}
+        {currentScreen === 3 && <BagScreen changeScreen={changeScreen} />}
         <StatusBar style="light" />
       </View>
     </Provider>
