@@ -132,7 +132,7 @@ const BrowseScreen = ({ changeScreen }) => {
   const [watchObjectForBag, setWatchObjectForBag] = useState({});
   useEffect(() => {
     setWatchObjectForBag((prevState) => ({
-      id: shoppingBag.length,
+      id: shoppingBag.length + Math.random(),
       collection: watches[currentWatch].collection,
       watchname: watches[currentWatch].watchname[currentColor],
       price: watches[currentWatch].price,

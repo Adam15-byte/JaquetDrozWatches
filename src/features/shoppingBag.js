@@ -10,12 +10,11 @@ export const shoppingBagSlice = createSlice({
     // action.payload is and object with all item information
     ////
     addToBag: (state, action) => {
-      const { collection, watchname, price, image } = action.payload;
       console.log(action.payload);
       state = state.push(action.payload);
     },
     removeFromBag: (state, action) => {
-      state.filter((item) => item.id !== action.payload.id);
+      return state.filter((item) => item.id !== action.payload);
     },
   },
 });
