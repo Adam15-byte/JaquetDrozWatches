@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, ScrollView, Pressable } from "react-native";
 import React, { useState, useEffect, useCallback } from "react";
 import { COLORS, FONTS, SIZES } from "../../assets/consts/consts";
 import { useSelector, useDispatch } from "react-redux";
@@ -31,87 +31,124 @@ const BagScreen = ({ changeScreen }) => {
     },
     [paymentMethodChosen]
   );
+  ////
+  // flexGrow in contentContainerStyle didn't work
+  // function to calculate height for ScrollView
+  ////
+  const minimumHeight = Math.max(
+    SIZES.SCREEN_HEIGHT,
+    shoppingBag.length * 120 + 800
+  );
   return (
-    <View style={styles.container}>
-      <View style={styles.topBarContainer}>
-        <RectGreyButton
-          onPress={() => changeScreen(2)}
-          isShoppingBag={false}
-          featherIconName="chevron-left"
-        />
-        <View style={styles.paymentTitles}>
-          <Text style={styles.paymentTitleText}>Payment</Text>
-          <Text style={styles.paymentSubtitleText}>Convenient Payment</Text>
-        </View>
-        <RectGreyButton
-          onPress={() => console.log("options pressed")}
-          isShoppingBag={false}
-          featherIconName="more-horizontal"
-        />
-      </View>
-      <View style={styles.watchesListContainer}>
-        {shoppingBag.length === 0 ? (
-          <View style={styles.noItemsContainer}>
-            <Text style={styles.noItemsText}>No items in bag</Text>
+    <ScrollView
+      style={styles.scrollViewContainer}
+      keyboardDismissMode="on-drag"
+      contentContainerStyle={{
+        minHeight: minimumHeight,
+      }}
+      showsVerticalScrollIndicator={true}
+      bounces={false}
+    >
+      <View style={styles.container}>
+        {/* Top Bar */}
+        <View style={styles.topBarContainer}>
+          <RectGreyButton
+            onPress={() => changeScreen(2)}
+            isShoppingBag={false}
+            featherIconName="chevron-left"
+          />
+          <View style={styles.paymentTitles}>
+            <Text style={styles.paymentTitleText}>Payment</Text>
+            <Text style={styles.paymentSubtitleText}>Convenient Payment</Text>
           </View>
-        ) : (
-          shoppingBag.map((item) => {
-            const { id, collection, watchname, price, image, size, quantity } =
-              item;
-            return (
-              <WatchInShoppingBag
-                key={id}
-                id={id}
-                collection={collection}
-                watchname={watchname}
-                price={price}
-                image={image}
-                size={size}
-                quantity={quantity}
-              />
-            );
-          })
-        )}
-      </View>
-      <View style={styles.summaryContainer}>
-        <View style={styles.itemsSummary}>
-          <Text style={styles.leftText}>Number</Text>
-          <View style={styles.rightTextContainer}>
-            {shoppingBag.length === 1 && (
-              <Text style={styles.rightText}>{shoppingBag.length} Item</Text>
-            )}
-            {shoppingBag.length !== 1 && (
-              <Text style={styles.rightText}>{shoppingBag.length} Items</Text>
-            )}
-          </View>
-        </View>
-        <View style={styles.totalPriceSummary}>
-          <Text style={styles.leftText}>Total Price</Text>
-          <View style={styles.rightTextContainer}>
-            <Text style={styles.rightText}>$ {totalPrice}</Text>
-          </View>
-        </View>
-        {paymentMethodChosen === "Card" && <CreditCard />}
-        {paymentMethodChosen === "Paypal" && <PaypalPayment />}
-        <View style={styles.paymentMethodPicker}>
-          <Text style={styles.paymentMethod}>Payment Method</Text>
-          <PaymentMethodPicker
-            changePaymentMethodChosen={changePaymentMethodChosen}
-            paymentMethodChosen={paymentMethodChosen}
+          <RectGreyButton
+            onPress={() => console.log("options pressed")}
+            isShoppingBag={false}
+            featherIconName="more-horizontal"
           />
         </View>
-        <ConfirmationButton />
+
+        {/* Watches insides shopping bag */}
+        <View style={styles.watchesListContainer}>
+          {shoppingBag.length === 0 ? (
+            <View style={styles.noItemsContainer}>
+              <Text style={styles.noItemsText}>No items in bag</Text>
+            </View>
+          ) : (
+            shoppingBag.map((item) => {
+              const {
+                id,
+                collection,
+                watchname,
+                price,
+                image,
+                size,
+                quantity,
+              } = item;
+              return (
+                <WatchInShoppingBag
+                  key={id}
+                  id={id}
+                  collection={collection}
+                  watchname={watchname}
+                  price={price}
+                  image={image}
+                  size={size}
+                  quantity={quantity}
+                />
+              );
+            })
+          )}
+        </View>
+
+        {/* Purchase Summary */}
+        <View style={styles.summaryContainer}>
+          <View style={styles.itemsSummary}>
+            <Text style={styles.leftText}>Number</Text>
+            <View style={styles.rightTextContainer}>
+              {shoppingBag.length === 1 && (
+                <Text style={styles.rightText}>{shoppingBag.length} Item</Text>
+              )}
+              {shoppingBag.length !== 1 && (
+                <Text style={styles.rightText}>{shoppingBag.length} Items</Text>
+              )}
+            </View>
+          </View>
+          <View style={styles.totalPriceSummary}>
+            <Text style={styles.leftText}>Total Price</Text>
+            <View style={styles.rightTextContainer}>
+              <Text style={styles.rightText}>$ {totalPrice}</Text>
+            </View>
+          </View>
+          {paymentMethodChosen === "Card" && <CreditCard />}
+          {paymentMethodChosen === "Paypal" && <PaypalPayment />}
+          <View style={styles.paymentMethodPicker}>
+            <Text style={styles.paymentMethod}>Payment Method</Text>
+            <PaymentMethodPicker
+              changePaymentMethodChosen={changePaymentMethodChosen}
+              paymentMethodChosen={paymentMethodChosen}
+            />
+          </View>
+          <ConfirmationButton />
+        </View>
       </View>
-    </View>
+    </ScrollView>
   );
 };
 
 export default BagScreen;
 
 const styles = StyleSheet.create({
+  scrollViewContainer: {
+    flexGrow: 1,
+    paddingBottom: 500,
+  },
   container: {
     flex: 1,
+    flexGrow: 1,
     width: SIZES.SCREEN_WIDTH,
+    minHeight: SIZES.SCREEN_HEIGHT,
+    height: "auto",
     paddingTop: 70,
     paddingBottom: 50,
     alignItems: "center",

@@ -23,8 +23,8 @@ export default function App() {
         {currentScreen === 1 && <LaunchScreen changeScreen={changeScreen} />}
         {currentScreen === 2 && <BrowseScreen changeScreen={changeScreen} />}
         {currentScreen === 3 && <BagScreen changeScreen={changeScreen} />}
-        <StatusBar style="light" />
       </View>
+      <StatusBar style="light" />
     </Provider>
   );
 }
@@ -34,7 +34,8 @@ const styles = StyleSheet.create({
     flex: 1,
     width: SIZES.SCREEN_WIDTH,
     backgroundColor: COLORS.black,
-    alignItems: "center",
-    justifyContent: "center",
+    minHeight: SIZES.SCREEN_HEIGHT,
+    height: SIZES.SCREEN_HEIGHT,
+    flexGrow: 1,
   },
 });
