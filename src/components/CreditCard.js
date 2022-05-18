@@ -9,17 +9,28 @@ import React, { useState, useRef, useEffect } from "react";
 import { SIZES, COLOS, FONTS, COLORS } from "../../assets/consts/consts";
 
 const CreditCard = () => {
+  ////
+  // refs to identify fields of numbers from TextInputs
+  ////
   const firstDigits = useRef();
   const secondDigits = useRef();
   const thirdDigits = useRef();
   const fourthDigits = useRef();
   const cvcDigits = useRef();
+
+  ////
+  // state to hold information from TextInputs
+  ////
   const [name, setName] = useState("");
   const [firstCardNumber, setFirstFourCardNumber] = useState("");
   const [secondCardNumber, setSecondFourCardNumber] = useState("");
   const [thirdCardNumber, setThirdFourCardNumber] = useState("");
   const [fourthCardNumber, setFourthFourCardNumber] = useState("");
   const [cvc, setCvc] = useState("");
+
+  ////
+  // on change of state, if on window reaches its maximum capacity, automatically transfer to next window
+  ////
   useEffect(() => {
     if (firstCardNumber.length === 4 && secondCardNumber.length === 0) {
       secondDigits.current.focus();
@@ -33,13 +44,7 @@ const CreditCard = () => {
     if (fourthCardNumber.length === 4 && cvc.length === 0) {
       cvcDigits.current.focus();
     }
-  }, [
-    firstCardNumber,
-    secondCardNumber,
-    thirdCardNumber,
-    fourthCardNumber,
-    cvc,
-  ]);
+  }, [firstCardNumber, secondCardNumber, thirdCardNumber, fourthCardNumber]);
   return (
     <View style={styles.container}>
       <ImageBackground
@@ -49,12 +54,15 @@ const CreditCard = () => {
       >
         {/* Full Name Input */}
         <View style={styles.nameContainer}>
-          <TextInput
-            style={styles.textInputStyle}
-            onChangeText={(text) => setName(text)}
-            value={name}
-          />
-          <View style={styles.whiteUnderline} />
+          <Text style={styles.nameIdentifier}>Name</Text>
+          <View style={styles.nameInputContainer}>
+            <TextInput
+              style={styles.textInputStyle}
+              onChangeText={(text) => setName(text)}
+              value={name}
+            />
+            <View style={styles.whiteUnderline} />
+          </View>
         </View>
 
         {/* Card Number Input */}
@@ -107,6 +115,8 @@ const CreditCard = () => {
             <View style={styles.whiteUnderline} />
           </View>
         </View>
+        {/* 
+        CVC container */}
         <View style={styles.cvcContainer}>
           <Text style={styles.cvcTitle}>cvc</Text>
           <View style={styles.cvcInputContainer}>
@@ -134,27 +144,38 @@ const styles = StyleSheet.create({
     width: SIZES.SCREEN_WIDTH * 0.8,
     height: SIZES.SCREEN_HEIGHT * 0.25,
     marginVertical: 15,
+    paddingRight: 15,
   },
   imageBackground: {
     width: SIZES.SCREEN_WIDTH * 0.8,
     height: "100%",
+    paddingRight: 15,
+    alignItems: "flex-end",
   },
   nameContainer: {
     marginTop: SIZES.SCREEN_HEIGHT * 0.08,
-    width: "40%",
+    width: SIZES.SCREEN_WIDTH * 0.5,
     height: 25,
-    alignItems: "flex-start",
-    justifyContent: "space-between",
-    marginLeft: SIZES.SCREEN_WIDTH * 0.3,
+    alignItems: "flex-end",
+    justifyContent: "center",
+    marginLeft: "auto",
+    flexDirection: "row",
+  },
+  nameInputContainer: {
+    width: SIZES.SCREEN_WIDTH * 0.3,
   },
   textInputStyle: {
-    width: "100%",
+    width: SIZES.SCREEN_WIDTH * 0.3,
     color: COLORS.white,
   },
   whiteUnderline: {
     height: StyleSheet.hairlineWidth,
     backgroundColor: COLORS.white,
     width: "100%",
+  },
+  nameIdentifier: {
+    color: COLORS.white,
+    marginRight: 10,
   },
   cardNumberContainer: {
     marginTop: SIZES.SCREEN_HEIGHT * 0.04,
@@ -183,7 +204,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     flexDirection: "row",
     marginLeft: "auto",
-    marginRight: SIZES.SCREEN_HEIGHT * 0.01,
   },
   cvcTitle: {
     color: COLORS.white,

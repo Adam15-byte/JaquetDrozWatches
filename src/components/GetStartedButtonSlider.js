@@ -64,7 +64,9 @@ const GetStartedButtonSlider = ({ textOpacity, imageOpacity, changeScreen }) => 
       width: width,
     };
   });
+  ////
   // Dummy array of four, used to map arrow icons. Animated style based on  position of button that changes opacity.
+  ////
   const newArrayOfFour = new Array(4).fill(0);
   const arrowsAnimatedOpacity = useAnimatedStyle(() => {
     const opacity = interpolate(

@@ -1,10 +1,13 @@
 import { StyleSheet, Text, View } from "react-native";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { COLORS, FONTS, SIZES } from "../../assets/consts/consts";
 import { useSelector, useDispatch } from "react-redux";
 import RectGreyButton from "../components/RectGreyButton";
 import WatchInShoppingBag from "../components/WatchInShoppingBag";
 import CreditCard from "../components/CreditCard";
+import PaymentMethodPicker from "../components/PaymentMethodPicker";
+import PaypalPayment from "../components/PaypalPayment";
+import ConfirmationButton from "../components/ConfirmationButton";
 
 const BagScreen = ({ changeScreen }) => {
   const shoppingBag = useSelector((state) => state.shoppingBag);
@@ -17,6 +20,17 @@ const BagScreen = ({ changeScreen }) => {
       });
     }
   }, [shoppingBag]);
+
+  ////
+  // State to keep track of current payment method chosen
+  ////
+  const [paymentMethodChosen, setPaymentMethodChosen] = useState("Card");
+  const changePaymentMethodChosen = useCallback(
+    (input) => {
+      setPaymentMethodChosen((prevState) => input);
+    },
+    [paymentMethodChosen]
+  );
   return (
     <View style={styles.container}>
       <View style={styles.topBarContainer}>
@@ -77,7 +91,16 @@ const BagScreen = ({ changeScreen }) => {
             <Text style={styles.rightText}>$ {totalPrice}</Text>
           </View>
         </View>
-        <CreditCard />
+        {paymentMethodChosen === "Card" && <CreditCard />}
+        {paymentMethodChosen === "Paypal" && <PaypalPayment />}
+        <View style={styles.paymentMethodPicker}>
+          <Text style={styles.paymentMethod}>Payment Method</Text>
+          <PaymentMethodPicker
+            changePaymentMethodChosen={changePaymentMethodChosen}
+            paymentMethodChosen={paymentMethodChosen}
+          />
+        </View>
+        <ConfirmationButton />
       </View>
     </View>
   );
@@ -159,5 +182,14 @@ const styles = StyleSheet.create({
     width: "25%",
     height: "100%",
     alignItems: "flex-start",
+  },
+  paymentMethod: {
+    color: COLORS.white,
+    ...FONTS.h3,
+    marginBottom: 10,
+  },
+  paymentMethodPicker: {
+    marginVertical: 5,
+    marginBottom: 25,
   },
 });
