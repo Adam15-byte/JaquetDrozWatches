@@ -10,7 +10,7 @@ import { Provider } from "react-redux";
 import { store } from "./src/features/store";
 
 export default function App() {
-  const [currentScreen, setCurrentScreen] = useState(2);
+  const [currentScreen, setCurrentScreen] = useState(1);
   const changeScreen = useCallback(
     (screen) => {
       setCurrentScreen((prevState) => screen);

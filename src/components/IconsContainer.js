@@ -39,7 +39,7 @@ const IconsContainer = ({ currentViewingMode, changeCurrentViewingMode }) => {
       </View>
       <View style={styles.textContainer}>
         {currentViewingMode === 1 && (
-          <Text style={styles.textBelowicons}>Touch image to rotate</Text>
+          <Text style={styles.textBelowicons}>Touch arrow to rotate</Text>
         )}
         {currentViewingMode === 2 && (
           <Text style={styles.textBelowicons}>Touch image to zoom</Text>

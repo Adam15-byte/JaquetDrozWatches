@@ -12,6 +12,8 @@ import Animated, {
   useSharedValue,
   FadeIn,
   FadeOut,
+  withSpring,
+  withTiming,
 } from "react-native-reanimated";
 import RectGreyButton from "../components/RectGreyButton";
 import { watches } from "../../assets/data/WatchesData";
@@ -51,6 +53,8 @@ const BrowseScreen = ({ changeScreen }) => {
   // Values and hooks to handle images rotation on press
   const rotateX = useSharedValue(0);
   const rotateY = useSharedValue(0);
+  const rotateXarrow = useSharedValue(0);
+  const rotateYarrow = useSharedValue(0);
   const onGestureEvent = useAnimatedGestureHandler({
     onStart: (_, context) => {
       context.x = rotateX.value;
@@ -59,12 +63,17 @@ const BrowseScreen = ({ changeScreen }) => {
     onActive: (event, context) => {
       rotateX.value = event.translationX + context.x;
       rotateY.value = event.translationY + context.y;
+      rotateXarrow.value = event.translationX;
+      rotateYarrow.value = event.translationY;
     },
-    onEnd: () => {},
+    onEnd: () => {
+      rotateXarrow.value = withTiming(0);
+      rotateYarrow.value = withTiming(0);
+    },
   });
   const animatedRotatingStyle = useAnimatedStyle(() => {
     return {
-      transform: [{ rotate: (rotateX.value + rotateY.value) / 200 }],
+      transform: [{ rotate: (rotateXarrow.value + rotateYarrow.value) / 200 }],
     };
   });
 
@@ -326,18 +335,19 @@ const styles = StyleSheet.create({
   leftRightArrowsContainer: {
     position: "absolute",
     flexDirection: "row",
-    width: SIZES.SCREEN_WIDTH * 0.95,
+    width: SIZES.SCREEN_WIDTH * 0.99,
     justifyContent: "space-between",
     zIndex: 10,
   },
   rotatioArrowContainer: {
-    zIndex: 12,
+    zIndex: 10,
     position: "absolute",
   },
   rotationArrowImage: {
-    height: SIZES.SCREEN_WIDTH * 0.7,
+    height: SIZES.SCREEN_WIDTH * 0.8,
     aspectRatio: 1,
-    opacity: 0.3,
+    opacity: 0.5,
+    transform: [{ rotate: "25deg" }],
   },
   zoomGestureView: {
     width: SIZES.SCREEN_WIDTH * 0.6,
