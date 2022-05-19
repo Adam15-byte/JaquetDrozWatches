@@ -203,27 +203,12 @@ const BrowseScreen = ({ changeScreen }) => {
               exiting={FadeOut}
             >
               <Image
-                source={require("../../assets/images/RotateArrow.png")}
+                source={require("../../assets/images/RotateArrow1.png")}
                 style={styles.rotationArrowImage}
               />
             </Animated.View>
           </PanGestureHandler>
         )}
-
-        {/* When Zoom is enabled, display a screen similar to the one with arrow, to maintain slight overlay on watches */}
-        {currentViewingMode === 2 && (
-          <Animated.View
-            style={styles.rotatioArrowContainer}
-            entering={FadeIn}
-            exiting={FadeOut}
-          >
-            <Image
-              source={require("../../assets/images/RotateCircle.png")}
-              style={styles.rotationArrowImage}
-            />
-          </Animated.View>
-        )}
-
         {/* Transparent block in front of watch displayed to read the data from PanGestureHandler */}
         {currentViewingMode === 2 && (
           <PanGestureHandler onGestureEvent={zoomGesture}>
@@ -407,7 +392,7 @@ const styles = StyleSheet.create({
     ...FONTS.h3,
   },
   singleArrowContainer: {
-    padding: 10,
+    padding: 20,
   },
   titleContainer: {
     height: 40,
