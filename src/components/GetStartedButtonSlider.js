@@ -48,7 +48,7 @@ const GetStartedButtonSlider = ({ textOpacity, imageOpacity, changeScreen }) => 
       if (translateButtonX.value >= maxSlideWidth - 40) {
         translateButtonX.value = withTiming(maxSlideWidth);
         unlockAndFadeCurrentScreen();
-        const delayedChange = runOnJS(setTimeout)(changeToNextScreen, 600);
+        const delayedChange = runOnJS(setTimeout)(changeToNextScreen, 800);
         runOnJS(clearTimeout)(delayedChange);
       }
     },

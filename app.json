@@ -27,6 +27,8 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "description": "Store selling JaquetDroz Watches. The project is non-commercial, made only for preview purposes. It is not officially associated with Jaquet Droz brand.\n\nMade and inspired by design on dribble: https://dribbble.com/shots/15975750-Watch-Shop-App",
+    "githubUrl": "https://github.com/Adam15-byte/JaquetDrozWatches"
   }
 }
