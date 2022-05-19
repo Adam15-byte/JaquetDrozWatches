@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, ScrollView, Pressable } from "react-native";
+import { StyleSheet, Text, View, ScrollView } from "react-native";
 import React, { useState, useEffect, useCallback } from "react";
 import { COLORS, FONTS, SIZES } from "../../assets/consts/consts";
 import { useSelector, useDispatch } from "react-redux";
@@ -8,8 +8,48 @@ import CreditCard from "../components/CreditCard";
 import PaymentMethodPicker from "../components/PaymentMethodPicker";
 import PaypalPayment from "../components/PaypalPayment";
 import ConfirmationButton from "../components/ConfirmationButton";
+import Animated, {
+  useSharedValue,
+  withTiming,
+  withDelay,
+  useAnimatedStyle,
+} from "react-native-reanimated";
 
-const BagScreen = ({ changeScreen }) => {
+const BagScreen = ({ changeScreen, currentScreen }) => {
+  ////
+  // Opacity values to change when changing screen.
+  ////
+  const topPartOpacity = useSharedValue(0);
+  const middlePartOpacity = useSharedValue(0);
+  const bottomPartOpacity = useSharedValue(0);
+
+  useEffect(() => {
+    if (currentScreen === 3) {
+      topPartOpacity.value = withTiming(1);
+      middlePartOpacity.value = withDelay(300, withTiming(1));
+      bottomPartOpacity.value = withDelay(600, withTiming(1));
+    }
+  }, [currentScreen]);
+
+  const topAnimatedOpacity = useAnimatedStyle(() => {
+    return { opacity: topPartOpacity.value };
+  });
+  const middleAnimatedOpacity = useAnimatedStyle(() => {
+    return { opacity: middlePartOpacity.value };
+  });
+  const bottomAnimatedOpacity = useAnimatedStyle(() => {
+    return { opacity: bottomPartOpacity.value };
+  });
+
+  const moveToPreviousScreen = () => {
+    topPartOpacity.value = withTiming(0);
+    middlePartOpacity.value = withDelay(300, withTiming(0));
+    bottomPartOpacity.value = withDelay(600, withTiming(0));
+    setTimeout(changeScreen, 600, 2);
+  };
+  ////
+  // import and handling of shoppingBag state from redux
+  ////
   const shoppingBag = useSelector((state) => state.shoppingBag);
   const [totalPrice, setTotalPrice] = useState(0);
   useEffect(() => {
@@ -51,9 +91,9 @@ const BagScreen = ({ changeScreen }) => {
     >
       <View style={styles.container}>
         {/* Top Bar */}
-        <View style={styles.topBarContainer}>
+        <Animated.View style={[styles.topBarContainer, topAnimatedOpacity]}>
           <RectGreyButton
-            onPress={() => changeScreen(2)}
+            onPress={moveToPreviousScreen}
             isShoppingBag={false}
             featherIconName="chevron-left"
           />
@@ -66,10 +106,12 @@ const BagScreen = ({ changeScreen }) => {
             isShoppingBag={false}
             featherIconName="more-horizontal"
           />
-        </View>
+        </Animated.View>
 
         {/* Watches insides shopping bag */}
-        <View style={styles.watchesListContainer}>
+        <Animated.View
+          style={[styles.watchesListContainer, topAnimatedOpacity]}
+        >
           {shoppingBag.length === 0 ? (
             <View style={styles.noItemsContainer}>
               <Text style={styles.noItemsText}>No items in bag</Text>
@@ -99,11 +141,11 @@ const BagScreen = ({ changeScreen }) => {
               );
             })
           )}
-        </View>
+        </Animated.View>
 
         {/* Purchase Summary */}
         <View style={styles.summaryContainer}>
-          <View style={styles.itemsSummary}>
+          <Animated.View style={[styles.itemsSummary, topAnimatedOpacity]}>
             <Text style={styles.leftText}>Number</Text>
             <View style={styles.rightTextContainer}>
               {shoppingBag.length === 1 && (
@@ -113,23 +155,27 @@ const BagScreen = ({ changeScreen }) => {
                 <Text style={styles.rightText}>{shoppingBag.length} Items</Text>
               )}
             </View>
-          </View>
-          <View style={styles.totalPriceSummary}>
+          </Animated.View>
+          <Animated.View style={[styles.totalPriceSummary, topAnimatedOpacity]}>
             <Text style={styles.leftText}>Total Price</Text>
             <View style={styles.rightTextContainer}>
               <Text style={styles.rightText}>$ {totalPrice}</Text>
             </View>
-          </View>
-          {paymentMethodChosen === "Card" && <CreditCard />}
+          </Animated.View>
+          {paymentMethodChosen === "Card" && (
+            <CreditCard middleAnimatedOpacity={middleAnimatedOpacity} />
+          )}
           {paymentMethodChosen === "Paypal" && <PaypalPayment />}
-          <View style={styles.paymentMethodPicker}>
+          <Animated.View
+            style={[styles.paymentMethodPicker, middleAnimatedOpacity]}
+          >
             <Text style={styles.paymentMethod}>Payment Method</Text>
             <PaymentMethodPicker
               changePaymentMethodChosen={changePaymentMethodChosen}
               paymentMethodChosen={paymentMethodChosen}
             />
-          </View>
-          <ConfirmationButton />
+          </Animated.View>
+          <ConfirmationButton bottomAnimatedOpacity={bottomAnimatedOpacity} />
         </View>
       </View>
     </ScrollView>

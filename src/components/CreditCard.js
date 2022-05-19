@@ -7,8 +7,9 @@ import {
 } from "react-native";
 import React, { useState, useRef, useEffect } from "react";
 import { SIZES, COLOS, FONTS, COLORS } from "../../assets/consts/consts";
+import Animated from "react-native-reanimated";
 
-const CreditCard = () => {
+const CreditCard = ({ middleAnimatedOpacity }) => {
   ////
   // refs to identify fields of numbers from TextInputs
   ////
@@ -46,7 +47,7 @@ const CreditCard = () => {
     }
   }, [firstCardNumber, secondCardNumber, thirdCardNumber, fourthCardNumber]);
   return (
-    <View style={styles.container}>
+    <Animated.View style={[styles.container, middleAnimatedOpacity]}>
       <ImageBackground
         resizeMode="contain"
         source={require("../../assets/images/CreditCard.png")}
@@ -133,7 +134,7 @@ const CreditCard = () => {
           </View>
         </View>
       </ImageBackground>
-    </View>
+    </Animated.View>
   );
 };
 

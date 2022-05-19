@@ -29,6 +29,9 @@ const GetStartedButtonSlider = ({ textOpacity, imageOpacity, changeScreen }) => 
     imageOpacity.value = withDelay(300, withTiming(0));
     sliderOpacity.value = withDelay(600, withTiming(0));
   };
+  const changeToNextScreen = () => {
+    changeScreen(2);
+  };
   const onGestureEvent = useAnimatedGestureHandler({
     onStart: (event, context) => {
       context.x = translateButtonX.value;
@@ -45,7 +48,7 @@ const GetStartedButtonSlider = ({ textOpacity, imageOpacity, changeScreen }) => 
       if (translateButtonX.value >= maxSlideWidth - 40) {
         translateButtonX.value = withTiming(maxSlideWidth);
         unlockAndFadeCurrentScreen();
-        //  runOnJS(changeScreen)(2);
+        runOnJS(setTimeout)(changeToNextScreen, 600);
       }
     },
   });

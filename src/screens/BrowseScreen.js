@@ -6,14 +6,13 @@ import Animated, {
   scrollTo,
   useAnimatedGestureHandler,
   useAnimatedRef,
-  useAnimatedScrollHandler,
   useAnimatedStyle,
   useDerivedValue,
   useSharedValue,
   FadeIn,
   FadeOut,
-  withSpring,
   withTiming,
+  withDelay,
 } from "react-native-reanimated";
 import RectGreyButton from "../components/RectGreyButton";
 import { watches } from "../../assets/data/WatchesData";
@@ -32,8 +31,43 @@ import {
 } from "../features/watchDisplayedSlice";
 import { addToBag } from "../features/shoppingBag";
 
-const BrowseScreen = ({ changeScreen }) => {
+const BrowseScreen = ({ changeScreen, currentScreen }) => {
+  ////
+  // values for opacity of elements, used when screens are changed
+  // either appearing on load or disappearing when moving to another screen
+  ////
+  const topPartOpacity = useSharedValue(0);
+  const middlePartOpacity = useSharedValue(0);
+  const bottomPartOpacity = useSharedValue(0);
+
+  useEffect(() => {
+    if (currentScreen === 2) {
+      topPartOpacity.value = withTiming(1);
+      middlePartOpacity.value = withDelay(300, withTiming(1));
+      bottomPartOpacity.value = withDelay(600, withTiming(1));
+    }
+  }, [currentScreen]);
+
+  const topAnimatedOpacity = useAnimatedStyle(() => {
+    return { opacity: topPartOpacity.value };
+  });
+  const middleAnimatedOpacity = useAnimatedStyle(() => {
+    return { opacity: middlePartOpacity.value };
+  });
+  const bottomAnimatedOpacity = useAnimatedStyle(() => {
+    return { opacity: bottomPartOpacity.value };
+  });
+
+  const moveToNextScreen = () => {
+    topPartOpacity.value = withTiming(0);
+    middlePartOpacity.value = withDelay(300, withTiming(0));
+    bottomPartOpacity.value = withDelay(600, withTiming(0));
+    setTimeout(changeScreen, 600, 3);
+  };
+
+  ////
   // Ref and Value used to swipe left and right on the screen
+  ////
   const flatListRef = useAnimatedRef();
   const scroll = useSharedValue(0);
   useDerivedValue(() => {
@@ -49,8 +83,9 @@ const BrowseScreen = ({ changeScreen }) => {
       scroll.value = scroll.value - 1;
     }
   };
-
+  ////
   // Values and hooks to handle images rotation on press
+  ////
   const rotateX = useSharedValue(0);
   const rotateY = useSharedValue(0);
   const rotateXarrow = useSharedValue(0);
@@ -77,6 +112,9 @@ const BrowseScreen = ({ changeScreen }) => {
     };
   });
 
+  ////
+  // state for keeping track of rotation mode or zoom mode
+  ////
   const [currentViewingMode, setCurrentViewingMode] = useState(1);
   const changeCurrentViewingMode = useCallback(
     (newState) => {
@@ -85,7 +123,9 @@ const BrowseScreen = ({ changeScreen }) => {
     [currentViewingMode]
   );
 
+  ////
   // Gesture Handler for zooming
+  ////
   const [zoomViewVisible, setZoomViewVisible] = useState(false);
   const changeZoomViewVisibility = useCallback(() => {
     setZoomViewVisible((prevState) => !prevState);
@@ -125,6 +165,7 @@ const BrowseScreen = ({ changeScreen }) => {
   const currentColor = useSelector((state) => state.watchDisplayed.colorIndex);
   const dispatch = useDispatch();
   const [currentItem, setCurrentItem] = useState(0);
+  // ref function that reads the current item
   const onViewChangeRef = useRef(({ viewableItems }) => {
     setCurrentItem((prevState) => viewableItems[0].index);
   });
@@ -153,7 +194,7 @@ const BrowseScreen = ({ changeScreen }) => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.topBarContainer}>
+      <Animated.View style={[styles.topBarContainer, topAnimatedOpacity]}>
         <View style={styles.topTexts}>
           <Text style={styles.headerText}>Online Store</Text>
           <Text style={styles.subheaderText}>Easy Shopping</Text>
@@ -161,16 +202,17 @@ const BrowseScreen = ({ changeScreen }) => {
         <RectGreyButton
           featherIconName="shopping-cart"
           onPress={() => {
-            changeScreen(3);
+            moveToNextScreen();
           }}
           isShoppingBag={true}
         />
-      </View>
+      </Animated.View>
 
       {/* Icons to change between rotation and zooming */}
       <IconsContainer
         currentViewingMode={currentViewingMode}
         changeCurrentViewingMode={changeCurrentViewingMode}
+        topAnimatedOpacity={topAnimatedOpacity}
       />
 
       {/* FlatList Displaying the watches in the center */}
@@ -181,7 +223,7 @@ const BrowseScreen = ({ changeScreen }) => {
         rotateX={rotateX}
         rotateY={rotateY}
       />
-      <View style={styles.flatListContainer}>
+      <Animated.View style={[styles.flatListContainer, middleAnimatedOpacity]}>
         <FlatList
           data={watches}
           renderItem={({ item, index }) => (
@@ -255,35 +297,37 @@ const BrowseScreen = ({ changeScreen }) => {
             </View>
           </TouchableOpacity>
         </View>
-      </View>
-      <View style={styles.nameContainer}>
-        <View style={styles.titleContainer}>
-          {isLoading ? null : (
-            <Text style={styles.watchName} numberOfLines={2}>
-              {watches[currentWatch].watchname[currentColor].toUpperCase()}
-            </Text>
-          )}
-        </View>
-
-        <Text style={styles.seriesName}>
-          {watches[currentWatch].collection.toUpperCase()}
-        </Text>
-      </View>
-      <ColorsSizePicker />
-      <View style={styles.buyButtonPriceContainer}>
-        <View style={styles.priceContainer}>
-          <Text style={styles.priceTag}>$ {watches[currentWatch].price}</Text>
-        </View>
-        <TouchableOpacity
-          onPress={() => {
-            dispatch(addToBag(watchObjectForBag));
-          }}
-        >
-          <View style={styles.buttonContainer}>
-            <Text style={styles.buttonText}>Order Online</Text>
+      </Animated.View>
+      <Animated.View style={bottomAnimatedOpacity}>
+        <View style={styles.nameContainer}>
+          <View style={styles.titleContainer}>
+            {isLoading ? null : (
+              <Text style={styles.watchName} numberOfLines={2}>
+                {watches[currentWatch].watchname[currentColor].toUpperCase()}
+              </Text>
+            )}
           </View>
-        </TouchableOpacity>
-      </View>
+
+          <Text style={styles.seriesName}>
+            {watches[currentWatch].collection.toUpperCase()}
+          </Text>
+        </View>
+        <ColorsSizePicker />
+        <View style={styles.buyButtonPriceContainer}>
+          <View style={styles.priceContainer}>
+            <Text style={styles.priceTag}>$ {watches[currentWatch].price}</Text>
+          </View>
+          <TouchableOpacity
+            onPress={() => {
+              dispatch(addToBag(watchObjectForBag));
+            }}
+          >
+            <View style={styles.buttonContainer}>
+              <Text style={styles.buttonText}>Order Online</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+      </Animated.View>
     </View>
   );
 };

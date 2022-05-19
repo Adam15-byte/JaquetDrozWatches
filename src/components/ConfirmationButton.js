@@ -2,11 +2,12 @@ import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { SIZES, COLORS, FONTS } from "../../assets/consts/consts";
 import { Ionicons } from "@expo/vector-icons";
+import Animated from "react-native-reanimated";
 
-const ConfirmationButton = () => {
+const ConfirmationButton = ({ bottomAnimatedOpacity }) => {
   const arrayOfFour = new Array(4).fill(0);
   return (
-    <View style={styles.container}>
+    <Animated.View style={[styles.container, bottomAnimatedOpacity]}>
       <Text style={styles.textStyle}>Confirmation</Text>
       <View style={styles.arrowContainer}>
         {arrayOfFour.map((_, index) => {
@@ -21,7 +22,7 @@ const ConfirmationButton = () => {
           );
         })}
       </View>
-    </View>
+    </Animated.View>
   );
 };
 

@@ -10,6 +10,9 @@ import { Provider } from "react-redux";
 import { store } from "./src/features/store";
 
 export default function App() {
+  ////
+  // state used for navigation. 1 = LaunchScreen, 2 = BrowseScreen, 3 = BagScreen
+  ////
   const [currentScreen, setCurrentScreen] = useState(1);
   const changeScreen = useCallback(
     (screen) => {
@@ -21,8 +24,18 @@ export default function App() {
     <Provider store={store}>
       <View style={styles.container}>
         {currentScreen === 1 && <LaunchScreen changeScreen={changeScreen} />}
-        {currentScreen === 2 && <BrowseScreen changeScreen={changeScreen} />}
-        {currentScreen === 3 && <BagScreen changeScreen={changeScreen} />}
+        {currentScreen === 2 && (
+          <BrowseScreen
+            changeScreen={changeScreen}
+            currentScreen={currentScreen}
+          />
+        )}
+        {currentScreen === 3 && (
+          <BagScreen
+            changeScreen={changeScreen}
+            currentScreen={currentScreen}
+          />
+        )}
       </View>
       <StatusBar style="light" />
     </Provider>

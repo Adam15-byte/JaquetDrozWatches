@@ -2,8 +2,13 @@ import { StyleSheet, Text, View, TouchableWithoutFeedback } from "react-native";
 import React, { useEffect, useState } from "react";
 import { COLORS, FONTS, SIZES } from "../../assets/consts/consts";
 import { Feather } from "@expo/vector-icons";
+import Animated from "react-native-reanimated";
 
-const IconsContainer = ({ currentViewingMode, changeCurrentViewingMode }) => {
+const IconsContainer = ({
+  currentViewingMode,
+  changeCurrentViewingMode,
+  topAnimatedOpacity,
+}) => {
   const [opacityState1, setOpacityState1] = useState(0.8);
   const [opacityState2, setOpacityState2] = useState(0.3);
   const opacityFunction = () => {
@@ -20,7 +25,7 @@ const IconsContainer = ({ currentViewingMode, changeCurrentViewingMode }) => {
     opacityFunction();
   }, [currentViewingMode]);
   return (
-    <View>
+    <Animated.View style={topAnimatedOpacity}>
       <View style={styles.iconsContainer}>
         <TouchableWithoutFeedback onPress={() => changeCurrentViewingMode(1)}>
           <View
@@ -45,7 +50,7 @@ const IconsContainer = ({ currentViewingMode, changeCurrentViewingMode }) => {
           <Text style={styles.textBelowicons}>Touch image to zoom</Text>
         )}
       </View>
-    </View>
+    </Animated.View>
   );
 };
 
