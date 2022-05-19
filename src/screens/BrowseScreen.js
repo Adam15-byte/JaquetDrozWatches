@@ -62,7 +62,11 @@ const BrowseScreen = ({ changeScreen, currentScreen }) => {
     topPartOpacity.value = withTiming(0);
     middlePartOpacity.value = withDelay(300, withTiming(0));
     bottomPartOpacity.value = withDelay(600, withTiming(0));
-    setTimeout(changeScreen, 600, 3);
+    const delayedChange = () => {
+      setTimeout(changeScreen, 600, 3);
+    };
+    delayedChange();
+    clearTimeout(delayedChange());
   };
 
   ////

@@ -45,7 +45,11 @@ const BagScreen = ({ changeScreen, currentScreen }) => {
     topPartOpacity.value = withTiming(0);
     middlePartOpacity.value = withDelay(300, withTiming(0));
     bottomPartOpacity.value = withDelay(600, withTiming(0));
-    setTimeout(changeScreen, 600, 2);
+    const delayedChange = () => {
+      setTimeout(changeScreen, 600, 2);
+    };
+    delayedChange();
+    clearTimeout(delayedChange());
   };
   ////
   // import and handling of shoppingBag state from redux
