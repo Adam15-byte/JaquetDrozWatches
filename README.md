@@ -21,7 +21,7 @@ After browsing the user can add a specific watch to shopping bag and proceed to 
 
 ## Technologies
 * Redux toolkit
-* React Native Reanimated
+* React Native Reanimated 2
 * Hooks: useEffect, useState, useRef, useCallback
 
 ## Videos_Images
