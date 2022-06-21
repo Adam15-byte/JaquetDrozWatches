@@ -49,7 +49,6 @@ const BagScreen = ({ changeScreen, currentScreen }) => {
       setTimeout(changeScreen, 600, 2);
     };
     delayedChange();
-    clearTimeout(delayedChange());
   };
   ////
   // import and handling of shoppingBag state from redux
