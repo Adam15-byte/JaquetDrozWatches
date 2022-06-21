@@ -66,7 +66,6 @@ const BrowseScreen = ({ changeScreen, currentScreen }) => {
       setTimeout(changeScreen, 600, 3);
     };
     delayedChange();
-    clearTimeout(delayedChange());
   };
 
   ////
